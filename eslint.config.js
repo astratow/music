@@ -1,4 +1,5 @@
-import { defineConfig, globalIgnores } from 'eslint/config'
+// eslint.config.js
+import { defineConfig } from 'eslint/config'
 import globals from 'globals'
 import js from '@eslint/js'
 import pluginVue from 'eslint-plugin-vue'
@@ -8,34 +9,39 @@ import skipFormatting from '@vue/eslint-config-prettier/skip-formatting'
 
 export default defineConfig([
   {
-    name: 'app/files-to-lint',
+    name: 'app/base',
     files: ['**/*.{js,mjs,jsx,vue}'],
-  },
-
-  globalIgnores(['**/dist/**', '**/dist-ssr/**', '**/coverage/**']),
-
-  {
+    ignores: ['**/dist/**', '**/dist-ssr/**', '**/coverage/**'],
     languageOptions: {
       globals: {
         ...globals.browser,
       },
     },
+    rules: {
+      // Twoje reguły tutaj:
+      'no-unused-vars': 'warn',
+      'no-console': 'off',
+    },
   },
 
+  // JavaScript rekomendacje
   js.configs.recommended,
-  ...pluginVue.configs['flat/essential'],
-  
+
+  // Vue 3 (flat config)
+  pluginVue.configs['flat/essential'],
+
+  // Vitest (tylko dla testów)
   {
     ...pluginVitest.configs.recommended,
     files: ['src/**/__tests__/*'],
   },
-  
+
+  // Cypress (dla testów e2e)
   {
     ...pluginCypress.configs.recommended,
-    files: [
-      'cypress/e2e/**/*.{cy,spec}.{js,ts,jsx,tsx}',
-      'cypress/support/**/*.{js,ts,jsx,tsx}'
-    ],
+    files: ['cypress/e2e/**/*.{cy,spec}.{js,ts,jsx,tsx}', 'cypress/support/**/*.{js,ts,jsx,tsx}'],
   },
-  skipFormatting,
+
+  // Wyłączenie konfliktów z Prettierem
+  ...skipFormatting,
 ])
