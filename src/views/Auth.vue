@@ -20,7 +20,7 @@
           <div class="flex justify-between items-center pb-4">
             <p class="text-2xl font-bold">Your Account</p>
             <!-- Modal Close Button -->
-            <div class="modal-close cursor-pointer z-50" @click="closeAuthModal">
+            <div class="modal-close cursor-pointer z-50" @click="modalStore.close()">
               <i class="fas fa-times"></i>
             </div>
           </div>
@@ -28,24 +28,22 @@
           <!-- Tabs -->
           <ul class="flex flex-wrap mb-4">
             <li class="flex-auto text-center">
-              <a
+              <button
+              type="button"
                 class="block rounded py-3 px-4 transition"
-                href="#"
                 @click="tab = 'login'"
-                :class="{
-                  'hover:text-white text-white bg-blue-600': tab === 'login',
-                  'hover:text-blue-600': tab === 'register',
-                }"
-                >Login</a
-              >
+                :class="tab === 'login' ? 'hover:text-white text-white' : 'bg-blue-600'"
+                >Login</button>
             </li>
             <li class="flex-auto text-center">
-              <a class="block rounded py-3 px-4 transition" href="#">Register</a>
+              <button type="button" class="block rounded py-3 px-4 transition"
+               @click="tab = 'register'"
+                :class="tab = 'register'  ? 'bg-blue-600 text-white' : 'hover:text-blue-600'">Register</button>
             </li>
           </ul>
 
           <!-- Login Form -->
-          <form>
+          <form v-show="tab === 'login'">
             <!-- Email -->
             <div class="mb-3">
               <label class="inline-block mb-2">Email</label>
@@ -72,7 +70,7 @@
             </button>
           </form>
           <!-- Registration Form -->
-          <form>
+          <form v-show="tab === 'register'">
             <!-- Name -->
             <div class="mb-3">
               <label class="inline-block mb-2">Name</label>
@@ -146,7 +144,7 @@
   </div>
 </template>
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { ref } from 'vue'
 import { storeToRefs } from 'pinia'
 import { useModalStore } from '@/stores/modal'
 const modalStore = useModalStore()
@@ -154,12 +152,10 @@ const { isAuthModalOpen } = storeToRefs(modalStore)
 
 const tab = ref('login')
 
-const closeAuthModal = () => {
-  modalStore.close()
-}
-
+/*
 const modalVisibility = computed({
   get: () => isAuthModalOpen.value,
   set: (value) => (isAuthModalOpen.value = value),
 })
+  */
 </script>
